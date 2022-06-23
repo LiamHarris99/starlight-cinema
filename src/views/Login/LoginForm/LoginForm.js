@@ -1,17 +1,15 @@
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { Box, TextField, Link, Typography } from '@mui/material';
-import { login } from '../../../store/authentication/authentication.thunk';
+import { Box, TextField, Link } from '@mui/material';
+import { login } from '../../../store/user/user.thunk';
 import { Button } from '../../../components';
 import theme from '../LoginPage/LoginPage.styles';
 
 function LoginForm({ onSetStatus }) {
   const dispatch = useDispatch();
-
-  const { isLoggedIn } = useSelector((state) => state.authen);
 
   const formik = useFormik({
     initialValues: {
@@ -26,13 +24,11 @@ function LoginForm({ onSetStatus }) {
       dispatch(login(values))
         .unwrap()
         .catch((err) => {
-          if (!err.response) onSetStatus({ error: err.toString(), open: true });
-          else onSetStatus({ error: err.response.data.toString(), open: true });
+          const error = err.response ? err.response.data.toString() : err.toString();
+          onSetStatus({ error, open: true });
         });
     }
   });
-
-  if (isLoggedIn) return <Typography component='h2'>Welcome !</Typography>;
 
   return (
     <Box component='form' minWidth='25rem' onSubmit={formik.handleSubmit}>

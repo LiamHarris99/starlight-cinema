@@ -33,7 +33,17 @@ const navUserTheme = createTheme({
           padding: '0.1rem 5px',
           fontSize: '0.8rem'
         }
-      }
+      },
+      variants: [
+        {
+          props: { variant: 'userName' },
+          style: {
+            background: 'transparent',
+            border: `1px solid ${globalTheme.palette.primary.light}`,
+            borderRadius: '0'
+          }
+        }
+      ]
     }
   }
 });

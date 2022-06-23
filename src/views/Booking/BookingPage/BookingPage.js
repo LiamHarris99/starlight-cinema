@@ -1,17 +1,18 @@
-import { Box, ThemeProvider } from '@mui/material';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Box, ThemeProvider, colors } from '@mui/material';
 import BookingInfo from '../BookingInfo/BookingInfo';
 import BookingSlot from '../BookingSlot/BookingSlot';
 import theme from './BookingPage.styles';
+import { init } from '../../../store/ticket/ticket.slice';
 
 function BookingPage() {
-  const location = useLocation();
-  const navigate = useNavigate();
-
   const [searchParams] = useSearchParams();
 
   const [info, setInfo] = useState({});
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const id = searchParams.get('id');
@@ -22,17 +23,22 @@ function BookingPage() {
       name: searchParams.get('name'),
       price: searchParams.get('price'),
       dateSelected: searchParams.get('dateSelected'),
-      timeSelected: searchParams.get('timeSelected')
+      timeSelected: searchParams.get('timeSelected'),
+      room: searchParams.get('room')
     });
   }, [navigate, searchParams]);
 
-  console.log(info, 'info');
-
   return (
     <ThemeProvider theme={theme}>
-      <Box component='main'>
+      <Box
+        component='main'
+        display='flex'
+        justifyContent='space-between'
+        color={colors.grey[50]}
+        mb='1.5rem'
+      >
         <BookingSlot />
-        <BookingInfo />
+        <BookingInfo info={info} />
       </Box>
     </ThemeProvider>
   );

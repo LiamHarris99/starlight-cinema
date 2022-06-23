@@ -1,8 +1,25 @@
-/* eslint-disable import/prefer-default-export */
-export function handleChangeDate(state, { payload: dateSelected }) {
-  const dateTimeSelected = state.dateTimes.find((dateTime) => dateTime.date === dateSelected);
+export function handleChangeDate(state, { payload: dateSelectedValue }) {
+  const dateTimeSelected = state.dateTimes.find(({ date }) => date === dateSelectedValue);
 
-  const { times } = dateTimeSelected;
-  state.times = [...times];
-  state.dateSelected = dateSelected;
+  state.dateTimeSelected = dateTimeSelected;
+}
+
+export function handleChangeTime(state, { payload: timeSelected }) {
+  state.timeSelected = timeSelected;
+}
+
+export function initSelector(state) {
+  state.id = '';
+  state.info = {};
+  state.dateTimes = [];
+  state.dateTimeSelected = {
+    date: '',
+    times: []
+  };
+  state.timeSelected = {
+    value: '',
+    room: {}
+  };
+  state.isLoading = false;
+  state.error = null;
 }

@@ -1,3 +1,6 @@
+import { useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { ThemeProvider, Alert, Snackbar } from '@mui/material';
 import { AuthenLayout, FormLayout } from '../../../components/layout';
 import { Logo } from '../../../components';
@@ -7,8 +10,22 @@ import useMuiStatusError from '../../../hooks/useMuiStatusError';
 
 function LoginPage() {
   const [status, { handleClose, setStatus }] = useMuiStatusError();
-
   const { error, open } = status;
+  const { isLoggedIn } = useSelector((state) => state.user);
+
+  const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const isFromBooking = searchParams.get('isFromBooking');
+
+    if (isLoggedIn && isFromBooking) return navigate('/combo', { replace: true });
+
+    if (isLoggedIn && !isFromBooking) return navigate('/', { replace: true });
+
+    return () => {};
+  }, [isLoggedIn, navigate, searchParams]);
 
   return (
     <ThemeProvider theme={theme}>

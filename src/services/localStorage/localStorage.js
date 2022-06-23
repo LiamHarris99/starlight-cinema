@@ -1,15 +1,15 @@
 const storage = {
   get(key) {
-    localStorage.getItem(key);
+    return localStorage.getItem(key);
   },
   remove(key) {
-    localStorage.removeItem(key);
+    return localStorage.removeItem(key);
   },
   set(key, value) {
-    localStorage.setItem(key, value);
+    return localStorage.setItem(key, value);
   },
   clear() {
-    localStorage.clear();
+    return localStorage.clear();
   }
 };
 

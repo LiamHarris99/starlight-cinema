@@ -2,10 +2,11 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import Carousel from 'react-material-ui-carousel';
 import { Box, Link } from '@mui/material';
+import Carousel from 'react-material-ui-carousel';
 import { getSlider } from '../../../store/slider/slider.thunk';
 import { Progress } from '../../../components';
+import Logo from '../../../assets/daeng.png';
 
 function ImageLink({ id, url, alt }) {
   return (

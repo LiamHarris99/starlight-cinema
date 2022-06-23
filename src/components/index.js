@@ -5,7 +5,6 @@ import { ToolbarMenu, ToolbarUser } from './Toolbar';
 import { NavMenu, NavUser } from './Nav';
 import { ModalBasic, ModalBoolean } from './Modal';
 import Progress from './Progress/Progress';
-import Slot from './Slot/Slot';
 
 export {
   Logo,
@@ -18,6 +17,5 @@ export {
   NavUser,
   ModalBasic,
   Progress,
-  Slot,
   ModalBoolean
 };

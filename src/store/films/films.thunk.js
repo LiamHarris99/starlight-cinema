@@ -8,9 +8,19 @@ export const getFilms = createAsyncThunk('get/getFilms', async (_, { rejectWithV
     console.log(res, 'res');
     return res.data;
   } catch (err) {
-    if (!err.response) throw err;
-    return rejectWithValue(err.response.data);
+    return rejectWithValue(err.message ? err.message : err);
   }
 });
 
-export const addFilm = createAsyncThunk('post/addFilm', async (_thunkApi) => {});
+export const addSlots = createAsyncThunk(
+  'post/addSlots',
+  async (dataInput, { rejectWithValue }) => {
+    const { id, ...values } = dataInput;
+    try {
+      const { data } = await axios.put(`${FILMS_SHOWING_URL}/${id}`, values);
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.message ? err.message : err);
+    }
+  }
+);

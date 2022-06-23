@@ -34,5 +34,5 @@ export function Button({ text, config }) {
 
 Button.propTypes = {
   config: PropTypes.oneOfType([PropTypes.object]),
-  text: PropTypes.string
+  text: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };

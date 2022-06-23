@@ -8,10 +8,10 @@ import {
   colors
 } from '@mui/material';
 import * as Yup from 'yup';
+import { useDispatch } from 'react-redux';
 import { useFormik } from 'formik';
-import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { register } from '../../../store/authentication/authentication.thunk';
+import { register } from '../../../store/user/user.thunk';
 import { Button } from '../../../components';
 
 const stylesBox = {
@@ -23,8 +23,6 @@ const stylesBox = {
 
 function RegisterForm({ onSetStatus }) {
   const dispatch = useDispatch();
-
-  const { isLoggedIn } = useSelector((state) => state.authen);
 
   const formik = useFormik({
     initialValues: {
@@ -54,14 +52,13 @@ function RegisterForm({ onSetStatus }) {
       const user = { email, password, info: rest };
       dispatch(register(user))
         .unwrap()
+        .then((_) => onSetStatus({ msg: 'Đăng ký thành công', open: true }))
         .catch((err) => {
-          if (!err.response) onSetStatus({ error: err.toString(), open: true });
-          else onSetStatus({ error: err.response.data.toString(), open: true });
+          const error = err.response ? err.response.data : err;
+          onSetStatus({ error: error.toString(), open: true });
         });
     }
   });
-
-  if (isLoggedIn) return <Typography component='h2'>Welcome !</Typography>;
 
   return (
     <Box component='form' minWidth='25rem' onSubmit={formik.handleSubmit}>

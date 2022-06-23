@@ -6,7 +6,7 @@ import theme from './ToolbarMenu.styles';
 
 function Logo() {
   return (
-    <Link component={RouterLink} to='/'>
+    <Link component={RouterLink} to='/' replace>
       <Box component='img' src={logo.first.url} alt={logo.first.alt} />
     </Link>
   );

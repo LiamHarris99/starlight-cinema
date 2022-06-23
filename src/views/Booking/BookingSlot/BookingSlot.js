@@ -4,7 +4,7 @@ import BookingSlotMain from './BookingSlotMain';
 
 function BookingSlot() {
   return (
-    <Box>
+    <Box width='70%'>
       <BookingSlotScreen />
       <BookingSlotMain />
     </Box>

@@ -1,15 +1,20 @@
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Box, FormControl, MenuItem, Select } from '@mui/material';
 import { getFilmByID } from '../../../store/film/film.thunk';
-import { changeDate } from '../../../store/film/film.slice';
+import { changeDate, changeTime, init } from '../../../store/film/film.slice';
 import { Progress } from '../../../components';
 
-function HomeSearchFilm({ onSetStatus, films }) {
-  const { isLoading, error, ...filmSelector } = useSelector((state) => state.film);
+function HomeSearchFilm({ onSetStatus, films, filmSelect }) {
+  const { isLoading, error, ...filmSelector } = filmSelect;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(init());
+  }, [dispatch]);
 
   const handleChangeFilm = (evt) => {
     const id = evt.target.value;
@@ -18,8 +23,8 @@ function HomeSearchFilm({ onSetStatus, films }) {
     dispatch(getFilmByID(id))
       .unwrap()
       .catch((err) => {
-        const errorMsg = err.response ? err.response.data.toString() : err.toString();
-        return onSetStatus({ error: errorMsg, open: true });
+        const errorMsg = err.response ? err.response.data : err;
+        return onSetStatus({ error: errorMsg.toString(), open: true });
       });
   };
 
@@ -30,18 +35,21 @@ function HomeSearchFilm({ onSetStatus, films }) {
     dispatch(changeDate(dateSelected));
   };
 
-  const handleChangeTime = (evt) => {
-    const timeSelected = evt.target.value;
-    if (timeSelected) {
-      const { id, info, dateSelected } = filmSelector;
+  const handleChangeTime = async (evt) => {
+    const timeSelectValue = evt.target.value;
+    if (timeSelectValue) {
+      const { id, info, dateTimeSelected, timeSelected } = filmSelector;
+
+      const time = dateTimeSelected.times.find(({ value }) => value === timeSelectValue);
+
+      await dispatch(changeTime(time));
+
       navigate({
         pathname: '/booking',
-        search: `?id=${id}&name=${info.title}&price=${info.price}&dateSelected=${dateSelected}&timeSelected=${timeSelected}`
+        search: `?id=${id}&name=${info.title}&price=${info.price}&dateSelected=${dateTimeSelected.date}&timeSelected=${timeSelectValue}&room=${time.room.name}`
       });
     }
   };
-
-  console.log(filmSelector, 'filmSelector');
 
   if (isLoading) return <Progress />;
 
@@ -79,7 +87,7 @@ function HomeSearchFilm({ onSetStatus, films }) {
       </FormControl>
       <FormControl>
         <Select
-          value={filmSelector.dateSelected}
+          value={filmSelector.dateTimeSelected.date}
           onChange={handleChangeDate}
           inputProps={{ 'aria-label': 'ngày' }}
           displayEmpty
@@ -87,9 +95,7 @@ function HomeSearchFilm({ onSetStatus, films }) {
           <MenuItem value=''>
             <em>Ngày</em>
           </MenuItem>
-          {filmSelector.dateTimes.map((dateTime) => {
-            const { date } = dateTime;
-
+          {filmSelector.dateTimes.map(({ date }) => {
             return (
               <MenuItem key={date} value={date}>
                 {date}
@@ -100,7 +106,7 @@ function HomeSearchFilm({ onSetStatus, films }) {
       </FormControl>
       <FormControl>
         <Select
-          value={filmSelector.timeSelected}
+          value={filmSelector.timeSelected.value}
           onChange={handleChangeTime}
           inputProps={{ 'aria-label': 'time' }}
           displayEmpty
@@ -108,10 +114,10 @@ function HomeSearchFilm({ onSetStatus, films }) {
           <MenuItem value=''>
             <em>Suất chiếu</em>
           </MenuItem>
-          {filmSelector.times.map((time) => {
+          {filmSelector.dateTimeSelected.times.map(({ value }) => {
             return (
-              <MenuItem key={time} value={time}>
-                {time}
+              <MenuItem key={value} value={value}>
+                {value}
               </MenuItem>
             );
           })}
@@ -123,7 +129,8 @@ function HomeSearchFilm({ onSetStatus, films }) {
 
 HomeSearchFilm.propTypes = {
   onSetStatus: PropTypes.oneOfType([PropTypes.func]),
-  films: PropTypes.oneOfType([PropTypes.array])
+  films: PropTypes.oneOfType([PropTypes.array]),
+  filmSelect: PropTypes.oneOfType([PropTypes.object])
 };
 
 export default HomeSearchFilm;

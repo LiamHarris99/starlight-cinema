@@ -1,21 +1,28 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { handleChangeDate, handleChangeTime, initSelector } from './film.action';
 import { getFilmByID } from './film.thunk';
-import { handleChangeDate } from './film.action';
 
 export const filmSlice = createSlice({
   name: 'film',
   initialState: {
     id: '',
-    dateTimes: [],
     info: {},
-    times: [],
-    dateSelected: '',
-    timeSelected: '',
+    dateTimes: [],
+    dateTimeSelected: {
+      date: '',
+      times: []
+    },
+    timeSelected: {
+      value: '',
+      room: {}
+    },
     isLoading: false,
     error: null
   },
   reducers: {
-    changeDate: handleChangeDate
+    changeDate: handleChangeDate,
+    changeTime: handleChangeTime,
+    init: initSelector
   },
   extraReducers: {
     [getFilmByID.fulfilled]: (state, { payload }) => {
@@ -36,6 +43,6 @@ export const filmSlice = createSlice({
   }
 });
 
-export const { changeDate } = filmSlice.actions;
+export const { changeDate, changeTime, init } = filmSlice.actions;
 
 export default filmSlice.reducer;

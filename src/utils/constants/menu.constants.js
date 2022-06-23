@@ -21,11 +21,15 @@ const menuNav = [
   }
 ];
 
-const menuUser = [
+const baseMenuUser = [
   {
     text: "FAQ's",
     url: '/FAQ'
-  },
+  }
+];
+
+const menuUser = [
+  ...baseMenuUser,
   {
     text: 'Đăng nhập',
     url: '/login'
@@ -63,4 +67,16 @@ const menuFooter = [
   }
 ];
 
-export { menuNav, menuUser, menuFooter };
+const menuLoggedIn = (name) => [
+  ...baseMenuUser,
+  {
+    text: name,
+    url: '/profile'
+  },
+  {
+    text: 'Đăng xuất',
+    url: '/logout'
+  }
+];
+
+export { menuNav, menuUser, menuFooter, menuLoggedIn };

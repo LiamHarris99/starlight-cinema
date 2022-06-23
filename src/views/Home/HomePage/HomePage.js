@@ -9,19 +9,25 @@ import useMuiStatusError from '../../../hooks/useMuiStatusError';
 import HomeCarousel from '../HomeCarousel/HomeCarousel';
 
 function HomePage() {
-  const dispatch = useDispatch();
-  const { isLoading, films } = useSelector((state) => state.films);
+  const { film, films } = useSelector((state) => ({
+    films: state.films,
+    film: state.film
+  }));
+
+  const { isLoading, films: filmList } = films;
 
   const [status, { handleClose, setStatus }] = useMuiStatusError();
 
   const { error, open } = status;
 
+  const dispatch = useDispatch();
+
   useEffect(() => {
     dispatch(getFilms())
       .unwrap()
       .catch((err) => {
-        const errorMsg = err.response ? err.response.data.toString() : err.toString();
-        return setStatus({ error: errorMsg, open: true });
+        const errorMsg = err.response ? err.response.data : err;
+        return setStatus({ error: errorMsg.toString(), open: true });
       });
   }, [dispatch, setStatus]);
 
@@ -39,7 +45,7 @@ function HomePage() {
 
       <Box component='main'>
         <HomeCarousel onSetStatus={setStatus} />
-        <HomeSearchFilm onSetStatus={setStatus} films={films} />
+        <HomeSearchFilm onSetStatus={setStatus} films={filmList} filmSelect={film} />
       </Box>
     </ThemeProvider>
   );
